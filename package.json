@@ -1,0 +1,19 @@
+{
+  "name": "file-service-for-share",
+  "version": "0.0.3",
+  "description": "Microservice that serves file like a file-service, but for share:// URIs",
+  "type": "module",
+  "dependencies": {
+    "@lblod/mu-auth-sudo": "^0.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/unknown"
+  },
+  "author": "redpencil.io",
+  "license": "MIT"
+}
