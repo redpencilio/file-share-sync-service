@@ -15,8 +15,8 @@ console.log(process.version);
 
 //GET /file/share%3A%2F%2F6148723409875
 //Returns metadata
-app.use("/file/:puri", express.json());
-app.get("/file/:puri", async (req, res) => {
+app.use("/files/:puri", express.json());
+app.get("/files/:puri", async (req, res) => {
   //URI encoded puri is atomatically decoded by express, {} if no parameter found
   const puri = req.params.puri;
 
@@ -71,8 +71,8 @@ app.get("/file/:puri", async (req, res) => {
 
 //GET /file/share%3A%2F%2F6148723409875/download?name=test.pdf
 //Returns the specified file with given name
-app.use("/file/:puri/download*", express.json());
-app.get("/file/:puri/download", async (req, res) => {
+app.use("/files/:puri/download*", express.json());
+app.get("/files/:puri/download", async (req, res) => {
   const puri = req.params.puri;
   const name = req.query.name;
   
