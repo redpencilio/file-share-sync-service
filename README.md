@@ -13,23 +13,23 @@ This follows the API of the [file-service](https://github.com/mu-semtech/file-se
 
 ### GET /files/:uri
 
-Get metadata of the file with the given physical file uri
+Get metadata of the file with the given physical file URI. NOTE: the `:uri` needs to be a URL encoded string of the URI, because it could contain special characters that could interfere with the URL.
 
 **Response 200 OK**
 
-Returns the metadata of the file with the given uri.
+Returns the metadata of the file with the given URI.
 
 **Response 404 Bad Request**
 
-If a file with the given uri cannot be found.
+If a file with the given URI cannot be found.
 
 ### GET /files/:uri/download
 
-Download the content of the file with the given id.
+Download the content of the file with the given URI. NOTE: the `:uri` needs to be a URL encoded string of the URI, because it could contain special characters that could interfere with the URL.
 
 *Query paramaters*
 
-*   `name` (optional): name for the downloaded file (e.g. `/files/1/download?name=report.pdf`)
+*   `name` (optional): name for the downloaded file (e.g. `/files/share%3A%2F%2F614872344579/download?name=report.pdf`)
 
 **Response 200 Ok**
 
