@@ -13,19 +13,12 @@ const FILES_GRAPH  = process.env.FILES_GRAPH  || "http://mu.semte.ch/files/";
 
 console.log(process.version);
 
-
-//GET /file/share%3A%2F%2F6148723409875/download?name=test.pdf
-//Returns the specified file with given name
-app.use("/file/:puri/download*", express.json());
-app.get("/file/:puri/download", async (req, res) => {
-  const puri = req.params.puri;
+app.get("/download", async (req, res) => {
+  const puri = req.query.uri;
   const name = req.query.name;
-  
-  if (typeof puri === "object")
-    res.send(400).send({ error: "No valid URI found as parameter to the URL. Please try a URL like `/file/:puri` where `:puri` is a URL encoded string." });
 
-  if (typeof name === "object")
-    name = undefined;
+  if (!puri)
+    res.send(400).send({ error: "No valid URI found as parameter to the URL. Please try a URL like `/download?uri=share://foo`" });
 
   const filepath = path.normalize(`${SHARE_FOLDER}/${puri.replace("share://", "")}`);
   res.download(filepath, name, err => {
