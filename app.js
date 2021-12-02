@@ -9,7 +9,6 @@ import * as express from "express";
 
 // Environment, constants with defaults
 const SHARE_FOLDER = process.env.SHARE_FOLDER || "/share/";
-const FILES_GRAPH  = process.env.FILES_GRAPH  || "http://mu.semte.ch/files/";
 
 console.log(process.version);
 
