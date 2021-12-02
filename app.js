@@ -1,11 +1,5 @@
-// see https://github.com/mu-semtech/mu-javascript-template for more info
-import fs   from "fs";
+import { app } from "mu";
 import path from "path";
-import { Buffer }    from "buffer";
-import { app }       from "mu";
-import { querySudo } from '@lblod/mu-auth-sudo';
-import * as mu      from "mu";
-import * as express from "express";
 
 // Environment, constants with defaults
 const SHARE_FOLDER = process.env.SHARE_FOLDER || "/share/";
