@@ -1,4 +1,4 @@
-# file-service-for-share
+# file-share-sync-service
 
 This file service only serves files. This service is only for retreiving those files by their `share://`.
 
