@@ -46,3 +46,36 @@ app.get("/download", async (req, res) => {
     });
   }
 });
+
+async function isValidSuperConsumer( sessionUri ) {
+  if(!ALLOW_SUPER_CONSUMER) {
+    return false;
+  }
+  else if(!sessionUri) {
+    return false;
+  }
+  else {
+    const queryStr = `
+      PREFIX muAccount: <http://mu.semte.ch/vocabularies/account/>
+
+      ASK {
+        GRAPH <http://mu.semte.ch/graphs/diff-producer/login> {
+          ${sparqlEscapeUri(sessionUri)} muAccount:account <http://services.lblod.info/diff-consumer/account>.
+         }
+      }
+    `;
+    const result = await querySudo(queryStr);
+
+    return result.boolean;
+  };
+}
+
+async function hasAccessToFile( puri ) {
+  const queryStr = `
+    ASK {
+      ${sparqlEscapeUri(puri)} a <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#FileDataObject>.
+    }
+  `;
+  const result = await query(queryStr);
+  return result.boolean;
+}
