@@ -6,6 +6,7 @@ import path from "path";
 const SHARE_FOLDER = process.env.SHARE_FOLDER || "/share/";
 
 console.log(process.version);
+const ALLOW_SUPER_CONSUMER = process.env.ALLOW_SUPER_CONSUMER == "true" ? true : false;
 
 app.get("/download", async (req, res) => {
   // 1. get request info
