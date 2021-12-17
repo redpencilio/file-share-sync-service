@@ -1,4 +1,4 @@
-import { app, sparqlEscapeUri, query } from "mu";
+import { app, sparqlEscapeUri, query, errorHandler } from "mu";
 import { querySudo } from '@lblod/mu-auth-sudo';
 import path from "path";
 
@@ -42,6 +42,8 @@ app.get("/download", async (req, res) => {
     }
   }
 });
+
+app.use(errorHandler);
 
 async function isValidSuperConsumer( sessionUri ) {
   if(!ALLOW_SUPER_CONSUMER) {
