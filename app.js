@@ -14,7 +14,7 @@ app.get("/download", async (req, res) => {
 
   // Validate request
   if (!puri) {
-    res.send(400).send({ error: "No valid URI found as parameter to the URL. Please try a URL like `/download?uri=share://foo`" });
+    res.status(400).send({ error: "No valid URI found as parameter to the URL. Please try a URL like `/download?uri=share://foo`" });
   }
   else {
 
@@ -25,7 +25,7 @@ app.get("/download", async (req, res) => {
 
     if (!hasAccess) {
       // You're not the consumer
-      res.send(400).send({ error: "Invalid credentials" });
+      res.status(400).send({ error: "Invalid credentials" });
     }
     else {
       // All fine: we try to return the file.
