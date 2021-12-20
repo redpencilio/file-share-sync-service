@@ -21,6 +21,10 @@ Download the content of the file.
 
 Expected response, the file is returned.
 
+**Response 400 Bad Request**
+
+Bad request, or no access
+
 **Response 404 Bad Request**
 
 No file could be found with the given uri (on disk).
