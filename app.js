@@ -12,15 +12,15 @@ app.get("/download", async (req, res) => {
   const name = req.query.name;
   const sessionUri = req.get('mu-session-id');
 
-  // Validate request
+  // 1. Validate request
   if (!puri) {
     res.status(400).send({ error: "No valid URI found as parameter to the URL. Please try a URL like `/download?uri=share://foo`" });
   }
   else {
 
-    // Validate access:
-    //   - if super-consumer, check session in db
-    //   - else fall back to normal authorization scheme provided by mu-auth
+    // 2. Validate access:
+    //    A. if super-consumer, check session in db
+    //    B. or, check normal authorization scheme provided by mu-auth
     const hasAccess = await isValidSuperConsumer(sessionUri) || await hasAccessToFile(puri);
 
     if (!hasAccess) {
@@ -28,7 +28,7 @@ app.get("/download", async (req, res) => {
       res.status(400).send({ error: "Invalid credentials" });
     }
     else {
-      // All fine: we try to return the file.
+      // 3. Authorization is fine: we try to return the file.
       const filepath = path.normalize(`${SHARE_FOLDER}/${puri.replace("share://", "")}`);
 
       res.download(filepath, name, err => {
