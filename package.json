@@ -1,6 +1,6 @@
 {
   "name": "file-service-for-share",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Microservice that serves file like a file-service, but for share:// URIs",
   "type": "module",
   "dependencies": {
