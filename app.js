@@ -23,12 +23,13 @@ app.get("/download", async (req, res) => {
     //    B. or, check normal authorization scheme provided by mu-auth
     const hasAccess = await isValidSuperConsumer(sessionUri) || await hasAccessToFile(puri);
 
+    // 3. Returning response
     if (!hasAccess) {
-      // You're not the consumer
+      // A. You're not the consumer
       res.status(400).send({ error: "Invalid credentials" });
     }
     else {
-      // 3. Authorization is fine: we try to return the file.
+      // B. Authorization is fine: we try to return the file.
       const filepath = path.normalize(`${SHARE_FOLDER}/${puri.replace("share://", "")}`);
 
       res.download(filepath, name, err => {
