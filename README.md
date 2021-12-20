@@ -23,7 +23,7 @@ Expected response, the file is returned.
 
 **Response 400 Bad Request**
 
-Bad request, or no access
+Bad request, or no access allowed
 
 **Response 404 Bad Request**
 
