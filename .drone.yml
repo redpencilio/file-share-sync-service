@@ -69,7 +69,15 @@ trigger:
   event:
   - pull_request
 ---
+kind: secret
+name: docker_username
+data: Gki8BX8l1ypRb2S9QD+m0jQX8kkhtQDA86pX0gEIiDOHvGIiQZD2
+---
+kind: secret
+name: docker_password
+data: NjpwuRABXI+eZQRPy+gLmstNUFPADDVlVoz1niYIoRsrfrB/dikPek+OqL8eYAkXpFPicH4I8d6sZ0oQX2jNLw==
+---
 kind: signature
-hmac: 0715c2f5f5e60700f8ea319e581ce878fd84ec56c6e85c7ed25e5bdc55854de9
+hmac: 2e0bc74286ed2cf5a68dea0ec4bd188b585822a7ac79d2b0417b2e3a60b98093
 
 ...
