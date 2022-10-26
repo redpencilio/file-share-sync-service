@@ -5,6 +5,7 @@ import path from "path";
 // Environment, constants with defaults
 const SHARE_FOLDER = process.env.SHARE_FOLDER || "/share/";
 const ALLOW_SUPER_CONSUMER = process.env.ALLOW_SUPER_CONSUMER == "true" ? true : false;
+const ALLOWED_ACCOUNTS = process.env.ALLOWED_ACCOUNTS || 'http://services.lblod.info/diff-consumer/account';
 
 app.get("/download", async (req, res) => {
   // Get request info
@@ -54,12 +55,16 @@ async function isValidSuperConsumer( sessionUri ) {
     return false;
   }
   else {
+    const accounts = ALLOWED_ACCOUNTS.split(',').map(a => sparqlEscapeUri(a));
     const queryStr = `
       PREFIX muAccount: <http://mu.semte.ch/vocabularies/account/>
 
       ASK {
+        VALUES ?account {
+          ${accounts.join('\n')}
+        }
         GRAPH <http://mu.semte.ch/graphs/diff-producer/login> {
-          ${sparqlEscapeUri(sessionUri)} muAccount:account <http://services.lblod.info/diff-consumer/account>.
+          ${sparqlEscapeUri(sessionUri)} muAccount:account ?account.
          }
       }
     `;

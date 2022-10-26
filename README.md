@@ -5,7 +5,7 @@ This file service only serves files. This service is only for retreiving those f
 ## Environment variables
 
 * `SHARE_FOLDER`: this is the path to the folder with the files to serve. This can also be the folder of the file service. (default: `/share/`)
-
+* `ALLOWED_ACCOUNTS`: 'http://foo,http://bar' (default: 'http://services.lblod.info/diff-consumer/account')
 ## API
 
 ### GET /download
