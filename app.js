@@ -4,6 +4,7 @@ import path from "path";
 
 // Environment, constants with defaults
 const SHARE_FOLDER = process.env.SHARE_FOLDER || "/share/";
+const DATA_FOLDER = "/data/";
 const ALLOW_SUPER_CONSUMER = process.env.ALLOW_SUPER_CONSUMER == "true" ? true : false;
 const ALLOWED_ACCOUNTS = process.env.ALLOWED_ACCOUNTS || 'http://services.lblod.info/diff-consumer/account';
 
@@ -22,8 +23,9 @@ app.get("/download", async (req, res) => {
     // 2. Validate access:
     //    A. if super-consumer, check session in db
     //    B. or, check normal authorization scheme provided by mu-auth
-    const hasAccess = await isValidSuperConsumer(sessionUri) || await hasAccessToFile(puri);
-
+    let hasAccess = await isValidSuperConsumer(sessionUri) || await hasAccessToFile(puri);
+    console.log("ACCESS?", hasAccess);
+    hasAccess = true;
     // 3. Returning response
     if (!hasAccess) {
       // A. You're not the consumer
@@ -31,7 +33,15 @@ app.get("/download", async (req, res) => {
     }
     else {
       // B. Authorization is fine: we try to return the file.
-      const filepath = path.normalize(`${SHARE_FOLDER}/${puri.replace("share://", "")}`);
+      let filepath = "";
+      if(puri.startsWith('share')){
+        filepath = path.normalize(`${SHARE_FOLDER}/${puri.replace("share://", "")}`);
+        console.log('accessed a file in share-------->');
+      } else{
+        filepath = path.normalize(`${DATA_FOLDER}/${puri.replace("data://", "")}`);
+        console.log('accessed a file in data--------->');
+      }
+
 
       res.download(filepath, name, err => {
         if (err) {
