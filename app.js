@@ -24,8 +24,6 @@ app.get("/download", async (req, res) => {
     //    A. if super-consumer, check session in db
     //    B. or, check normal authorization scheme provided by mu-auth
     let hasAccess = await isValidSuperConsumer(sessionUri) || await hasAccessToFile(puri);
-    console.log("ACCESS?", hasAccess);
-    hasAccess = true;
     // 3. Returning response
     if (!hasAccess) {
       // A. You're not the consumer
@@ -36,10 +34,8 @@ app.get("/download", async (req, res) => {
       let filepath = "";
       if(puri.startsWith('share')){
         filepath = path.normalize(`${SHARE_FOLDER}/${puri.replace("share://", "")}`);
-        console.log('accessed a file in share-------->');
-      } else{
+      } else if (puri.startsWith('data')) {
         filepath = path.normalize(`${DATA_FOLDER}/${puri.replace("data://", "")}`);
-        console.log('accessed a file in data--------->');
       }
 
 
