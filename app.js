@@ -4,7 +4,7 @@ import path from "path";
 
 // Environment, constants with defaults
 const SHARE_FOLDER = process.env.SHARE_FOLDER || "/share/";
-const DATA_FOLDER = "/data/";
+const DATA_FOLDER = process.env.DATA_FOLDER || "/data/";
 const ALLOW_SUPER_CONSUMER = process.env.ALLOW_SUPER_CONSUMER == "true" ? true : false;
 const ALLOWED_ACCOUNTS = process.env.ALLOWED_ACCOUNTS || 'http://services.lblod.info/diff-consumer/account';
 
@@ -23,7 +23,8 @@ app.get("/download", async (req, res) => {
     // 2. Validate access:
     //    A. if super-consumer, check session in db
     //    B. or, check normal authorization scheme provided by mu-auth
-    let hasAccess = await isValidSuperConsumer(sessionUri) || await hasAccessToFile(puri);
+    const hasAccess = await isValidSuperConsumer(sessionUri) || await hasAccessToFile(puri);
+
     // 3. Returning response
     if (!hasAccess) {
       // A. You're not the consumer
