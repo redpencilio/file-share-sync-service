@@ -7,32 +7,17 @@ const ALLOW_SUPER_CONSUMER = process.env.ALLOW_SUPER_CONSUMER == 'true' ? true :
 const ALLOWED_ACCOUNTS = (process.env.ALLOWED_ACCOUNTS || 'http://services.lblod.info/diff-consumer/account').split(',');
 
 app.get('/download', async (req, res) => {
-  // Get request info
   const puri = req.query.uri;
   const name = req.query.name;
   const sessionUri = req.get('mu-session-id');
 
-  // 1. Validate request
-  if (!puri) {
-    res.status(400).send({ error: 'No valid URI found as parameter to the URL. Please try a URL like /download?uri=share://foo' });
-  }
-  else {
+  if (puri) {
+    const hasAccess = await hasSuperAccess(sessionUri) || await hasAccessToFile(puri);
 
-    // 2. Validate access:
-    //    A. if super-consumer, check session in db
-    //    B. or, check normal authorization scheme provided by mu-auth
-    const hasAccess = await isValidSuperConsumer(sessionUri) || await hasAccessToFile(puri);
+    if (hasAccess) {
+      const filepath = path.normalize(puri.replace('share://', SHARE_FOLDER));
 
-    // 3. Returning response
-    if (!hasAccess) {
-      // A. You're not the consumer
-      res.status(400).send({ error: 'Invalid credentials' });
-    }
-    else {
-      // B. Authorization is fine: we try to return the file.
-      const filepath = path.normalize(`${SHARE_FOLDER}/${puri.replace('share://', '')}`);
-
-      res.download(filepath, name, err => {
+      res.download(filepath, name, (err) => {
         if (err) {
           console.error(err);
           res.status(404).end();
@@ -40,36 +25,35 @@ app.get('/download', async (req, res) => {
         else
           console.log(`Sent file ${filepath} with name ${name}`);
       });
+    } else {
+      res.status(400).send({ error: 'Invalid credentials' });
     }
+  } else {
+    res.status(400).send({ error: 'No valid URI found as parameter to the URL. Please try a URL like /download?uri=share://foo' });
   }
 });
 
 app.use(errorHandler);
 
-async function isValidSuperConsumer( sessionUri ) {
-  if(!ALLOW_SUPER_CONSUMER) {
-    return false;
-  }
-  else if(!sessionUri) {
-    return false;
-  }
-  else {
-    const accounts = ALLOWED_ACCOUNTS.map(a => sparqlEscapeUri(a));
+async function hasSuperAccess(sessionUri) {
+  if (ALLOW_SUPER_CONSUMER && sessionUri) {
     const result = await query(`
       PREFIX muAccount: <http://mu.semte.ch/vocabularies/account/>
 
       ASK {
         VALUES ?account {
-          ${accounts.join('\n')}
+          ${ALLOWED_ACCOUNTS.map(a => sparqlEscapeUri(a)).join('\n')}
         }
         GRAPH <http://mu.semte.ch/graphs/diff-producer/login> {
           ${sparqlEscapeUri(sessionUri)} muAccount:account ?account.
-         }
+        }
       }
     `, { sudo: true });
 
     return result.boolean;
-  };
+  } else {
+    return false;
+  }
 }
 
 async function hasAccessToFile( puri ) {
