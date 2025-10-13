@@ -1,2 +1,2 @@
-FROM semtech/mu-javascript-template:1.5.0-beta.4
+FROM semtech/mu-javascript-template:feature-node-24-upgrade
 LABEL maintainer=info@redpencil.io
