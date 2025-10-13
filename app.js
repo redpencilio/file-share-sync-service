@@ -1,5 +1,4 @@
 import { app, sparqlEscapeUri, query, errorHandler } from "mu";
-import { querySudo } from '@lblod/mu-auth-sudo';
 import path from "path";
 
 // Environment, constants with defaults
@@ -56,7 +55,7 @@ async function isValidSuperConsumer( sessionUri ) {
   }
   else {
     const accounts = ALLOWED_ACCOUNTS.split(',').map(a => sparqlEscapeUri(a));
-    const queryStr = `
+    const result = await query(`
       PREFIX muAccount: <http://mu.semte.ch/vocabularies/account/>
 
       ASK {
@@ -67,19 +66,17 @@ async function isValidSuperConsumer( sessionUri ) {
           ${sparqlEscapeUri(sessionUri)} muAccount:account ?account.
          }
       }
-    `;
-    const result = await querySudo(queryStr);
+    `, { sudo: true });
 
     return result.boolean;
   };
 }
 
 async function hasAccessToFile( puri ) {
-  const queryStr = `
+  const result = await query(`
     ASK {
       ${sparqlEscapeUri(puri)} a <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#FileDataObject>.
     }
-  `;
-  const result = await query(queryStr);
+  `);
   return result.boolean;
 }
