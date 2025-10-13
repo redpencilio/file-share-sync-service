@@ -1,12 +1,12 @@
-import { app, sparqlEscapeUri, query, errorHandler } from "mu";
-import path from "path";
+import { app, sparqlEscapeUri, query, errorHandler } from 'mu';
+import path from 'path';
 
 // Environment, constants with defaults
-const SHARE_FOLDER = process.env.SHARE_FOLDER || "/share/";
-const ALLOW_SUPER_CONSUMER = process.env.ALLOW_SUPER_CONSUMER == "true" ? true : false;
-const ALLOWED_ACCOUNTS = process.env.ALLOWED_ACCOUNTS || 'http://services.lblod.info/diff-consumer/account';
+const SHARE_FOLDER = process.env.SHARE_FOLDER || '/share/';
+const ALLOW_SUPER_CONSUMER = process.env.ALLOW_SUPER_CONSUMER == 'true' ? true : false;
+const ALLOWED_ACCOUNTS = (process.env.ALLOWED_ACCOUNTS || 'http://services.lblod.info/diff-consumer/account').split(',');
 
-app.get("/download", async (req, res) => {
+app.get('/download', async (req, res) => {
   // Get request info
   const puri = req.query.uri;
   const name = req.query.name;
@@ -14,7 +14,7 @@ app.get("/download", async (req, res) => {
 
   // 1. Validate request
   if (!puri) {
-    res.status(400).send({ error: "No valid URI found as parameter to the URL. Please try a URL like `/download?uri=share://foo`" });
+    res.status(400).send({ error: 'No valid URI found as parameter to the URL. Please try a URL like /download?uri=share://foo' });
   }
   else {
 
@@ -26,11 +26,11 @@ app.get("/download", async (req, res) => {
     // 3. Returning response
     if (!hasAccess) {
       // A. You're not the consumer
-      res.status(400).send({ error: "Invalid credentials" });
+      res.status(400).send({ error: 'Invalid credentials' });
     }
     else {
       // B. Authorization is fine: we try to return the file.
-      const filepath = path.normalize(`${SHARE_FOLDER}/${puri.replace("share://", "")}`);
+      const filepath = path.normalize(`${SHARE_FOLDER}/${puri.replace('share://', '')}`);
 
       res.download(filepath, name, err => {
         if (err) {
@@ -54,7 +54,7 @@ async function isValidSuperConsumer( sessionUri ) {
     return false;
   }
   else {
-    const accounts = ALLOWED_ACCOUNTS.split(',').map(a => sparqlEscapeUri(a));
+    const accounts = ALLOWED_ACCOUNTS.map(a => sparqlEscapeUri(a));
     const result = await query(`
       PREFIX muAccount: <http://mu.semte.ch/vocabularies/account/>
 
