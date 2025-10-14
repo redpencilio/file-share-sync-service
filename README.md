@@ -24,6 +24,7 @@ services:
   fileshare:
     image: redpencil/file-share-sync:0.1.0
     environment:
+      ALLOW_MU_AUTH_SUDO: "true"
       ALLOW_SUPER_CONSUMER: "true"
     volumes:
       - ./data/files:/share
