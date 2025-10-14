@@ -1,4 +1,4 @@
-FROM semtech/mu-javascript-template:feature-node-24-upgrade
+FROM semtech/mu-javascript-template:1.9.1
 LABEL maintainer=info@redpencil.io
 
 ENV LOG_SPARQL_ALL=false
