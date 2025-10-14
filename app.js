@@ -12,20 +12,21 @@ app.get('/download', async (req, res) => {
   const sessionUri = req.get('mu-session-id');
 
   if (puri) {
+    console.log(`Request to download file ${puri}`);
     const hasAccess = await hasSuperAccess(sessionUri) || await hasAccessToFile(puri);
 
     if (hasAccess) {
       const filepath = path.normalize(puri.replace('share://', SHARE_FOLDER));
-
       res.download(filepath, name, (err) => {
         if (err) {
           console.error(err);
           res.status(404).end();
         }
         else
-          console.log(`Sent file ${filepath} with name ${name}`);
+          console.log(`Sent file ${filepath} with name ${name || path.basename(filepath)}`);
       });
     } else {
+      console.log(`No access to file ${puri}`);
       res.status(400).send({ error: 'Invalid credentials' });
     }
   } else {
@@ -37,6 +38,7 @@ app.use(errorHandler);
 
 async function hasSuperAccess(sessionUri) {
   if (ALLOW_SUPER_CONSUMER && sessionUri) {
+    console.log(`Checking super access for ${sessionUri}`);
     const result = await query(`
       PREFIX muAccount: <http://mu.semte.ch/vocabularies/account/>
 
@@ -57,6 +59,7 @@ async function hasSuperAccess(sessionUri) {
 }
 
 async function hasAccessToFile( puri ) {
+  console.log(`Checking regular access to file ${puri}`);
   const result = await query(`
     ASK {
       ${sparqlEscapeUri(puri)} a <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#FileDataObject>.
